@@ -90,7 +90,8 @@ enum {
     RADIO_POLLFT9000,   //1.66B AA6YQ add new radios at end of list as this value is stored in mmtty.ini
     RADIO_POLLFT2000,   //1.66B AA6YQ
     RADIO_POLLFT950,    //1.66B AA6YQ
-    RADIO_POLLFT450,    //1.66B AA6YQ
+	RADIO_POLLFT450,    //1.66B AA6YQ
+	RADIO_POLLFT991A,	//R3KEE 12.01.2022
 };
 
 class CCradio : public TThread
@@ -133,6 +134,7 @@ protected:
 	void FreqKenwood(void);
 	void FreqJST245(void);
 	void FreqYaesu9K2K(void);
+	void FreqYaesuft991a(void);
 
 public:
 	__fastcall CCradio(bool CreateSuspended);

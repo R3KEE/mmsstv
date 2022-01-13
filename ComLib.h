@@ -44,7 +44,7 @@
 /*
 1.12 JASTAコンテスト　重複チェックの修正
 */
-#define VERBETA "A"
+#define VERBETA "B"					//R3KEE 12.01.2022
 #define	VERID	"Ver 1.13"
 #define	VERTTL2	"MMSSTV "VERID VERBETA
 #define	VERTTL  VERTTL2" (C) JE3HHT 2001-2010."

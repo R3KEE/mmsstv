@@ -8,10 +8,10 @@
 // MMSSTV is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-// MMSSTV is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MMSSTV is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
-// You should have received a copy of the GNU Lesser General Public License along with MMTTY.  If not, see 
+// You should have received a copy of the GNU Lesser General Public License along with MMTTY.  If not, see
 // <http://www.gnu.org/licenses/>.
 //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -27,19 +27,21 @@
 #pragma resource "*.dfm"
 LPCSTR	__MK[]={
 	"YAESU FT-1000D, 1000MP, 920",                  //AA6YQ 1.66 cosmetic, MakerIndex=0
-    "YAESU FT-9000, 2000, 950, 450",                //AA6YQ 1.66         , MakerIndex=1
-	"YAESU FT-736, 817, 847, 857, 897",                            //AA6YQ 1.66 cosmetic, MakerIndex=2
-	"Icom  xx=addr 01-7F",                          //                   , MakerIndex=3
-	"Ten-Tec Omni VI  xx=addr 00-64",               //                   , MakerIndex=4
-	"Kenwood, Elecraft ",                                      //                   , MakerIndex=5
-	"JRC JST-245",                                  //                   , MakerIndex=6
-	"Clear",                                        //                   , MakerIndex=6
-	NULL,                                           //                   , MakerIndex=8
+	"YAESU FT-9000, 2000, 950, 450",                //AA6YQ 1.66         , MakerIndex=1
+	"YAESU FT-736, 817, 847, 857, 897",             //AA6YQ 1.66 cosmetic, MakerIndex=2
+	"YAESU FT-991A",                                //R3KEE 13.01.2022   , MakerIndex=3
+	"Icom  xx=addr 01-7F",                          //                   , MakerIndex=4
+	"Ten-Tec Omni VI  xx=addr 00-64",               //                   , MakerIndex=5
+	"Kenwood, Elecraft ",                           //                   , MakerIndex=6
+	"JRC JST-245",                                  //                   , MakerIndex=7
+	"Clear",                                        //                   , MakerIndex=8
+	NULL,                                           //                   , MakerIndex=9
 };
 LPCSTR	__MT[][3]={
 	{"", "\\$000000000F", "\\$000000010F\\w10" },
-    {"", "TX0;", "TX1;\\w10" },                       //AA6YQ 1.66
+	{"", "TX0;", "TX1;\\w10" },                       //AA6YQ 1.66
 	{"\\$0000000000", "\\$0000000088", "\\$0000000008\\w10" },
+	{"AI0;","TX0;","TX1;\\w10"},						//R3KEE 13.01.2022
 	{"", "\\$FEFExxE01C0000FD", "\\$FEFExxE01C0001FD\\w10" },
 	{"", "\\$FEFExxE01602FD", "\\$FEFExxE01601FD\\w10" },
 	{"", "RX;", "TX;\\w10" },
@@ -47,7 +49,7 @@ LPCSTR	__MT[][3]={
 	{"", "", "" },
 };
 
-#define	MAKER_UNKNOWN	7
+#define	MAKER_UNKNOWN	8
 
 typedef struct {
 	LPCSTR	pKey;
@@ -63,10 +65,10 @@ const POLLDEF	__VT0[]={
 };
 const POLLDEF	__VT1[]={
 	{ "NONE", 0 },
-    { "FT-9000", RADIO_POLLFT9000 },    //1.66B AA6YQ
-    { "FT-2000", RADIO_POLLFT2000 },    //1.66B AA6YQ
-    { "FT-950", RADIO_POLLFT950 },      //1.66B AA6YQ
-    { "FT-450", RADIO_POLLFT450 },      //1.66B AA6YQ
+	{ "FT-9000", RADIO_POLLFT9000 },    //1.66B AA6YQ
+	{ "FT-2000", RADIO_POLLFT2000 },    //1.66B AA6YQ
+	{ "FT-950", RADIO_POLLFT950 },      //1.66B AA6YQ
+	{ "FT-450", RADIO_POLLFT450 },      //1.66B AA6YQ
 	{ NULL, 0 },
 };
 const POLLDEF	__VT2[]={
@@ -76,23 +78,28 @@ const POLLDEF	__VT2[]={
 };
 const POLLDEF	__VT3[]={
 	{ "NONE", 0 },
+	{ "FT-991A", RADIO_POLLFT991A },	//R3KEE 12.01.2022
+	{ NULL, 0 },
+};
+const POLLDEF	__VT4[]={
+	{ "NONE", 0 },
 	{ "ICOM CI-V", RADIO_POLLICOM },
 	{ "ICOM CI-V (no inquiry)", RADIO_POLLICOMN },
 	{ NULL, 0 },
 };
-const POLLDEF	__VT4[]={
+const POLLDEF	__VT5[]={
 	{ "NONE", 0 },
 	{ "Ten-Tec Omni VI", RADIO_POLLOMNIVI },
 	{ "Ten-Tec Omni VI (no inquiry)", RADIO_POLLOMNIVIN },
 	{ NULL, 0 },
 };
-const POLLDEF	__VT5[]={
+const POLLDEF	__VT6[]={
 	{ "NONE", 0 },
 	{ "KENWOOD", RADIO_POLLKENWOOD },
 	{ "KENWOOD (use auto info)", RADIO_POLLKENWOODN },
 	{ NULL, 0 },
 };
-const POLLDEF	__VT6[]={
+const POLLDEF	__VT7[]={
 	{ "NONE", 0 },
 	{ "JST245", RADIO_POLLJST245 },
 	{ "JST245 (use auto info)", RADIO_POLLJST245N },
@@ -104,10 +111,11 @@ const POLLDEF	__VTUNKNOWN[]={
 	{ "YAESU FT-1000D", RADIO_POLLFT1000D },
 	{ "YAESU FT-920", RADIO_POLLFT920 },
 	{ "YAESU FT-817, 847, 857, 897", RADIO_POLLYAESUVU },
-    { "YAESU FT-9000", RADIO_POLLFT9000 },  //1.66B AA6YQ
-    { "YAESU FT-2000", RADIO_POLLFT2000 },  //1.66B AA6YQ
-    { "YAESU FT-950", RADIO_POLLFT950 },    //1.66B AA6YQ
-    { "YAESU FT-450", RADIO_POLLFT450 },    //1.66B AA6YQ
+	{ "YAESU FT-9000", RADIO_POLLFT9000 },  //1.66B AA6YQ
+	{ "YAESU FT-2000", RADIO_POLLFT2000 },  //1.66B AA6YQ
+	{ "YAESU FT-950", RADIO_POLLFT950 },    //1.66B AA6YQ
+	{ "YAESU FT-450", RADIO_POLLFT450 },    //1.66B AA6YQ
+	{ "FT-991A", RADIO_POLLFT991A },		//R3KEE 12.01.2022
 	{ "ICOM CI-V", RADIO_POLLICOM },
 	{ "ICOM CI-V (no inquiry)", RADIO_POLLICOMN },
 	{ "Ten-Tec Omni VI", RADIO_POLLOMNIVI },
@@ -119,7 +127,7 @@ const POLLDEF	__VTUNKNOWN[]={
 	{ NULL, 0 },
 };
 const POLLDEF	*__VL[]={
-	__VT0, __VT1, __VT2, __VT3, __VT4, __VT5, __VT6, __VTUNKNOWN, NULL,
+	__VT0, __VT1, __VT2, __VT3, __VT4, __VT5, __VT6, __VT7, __VTUNKNOWN, NULL,
 };
 //---------------------------------------------------------------------
 __fastcall TRADIOSetDlg::TRADIOSetDlg(TComponent* AOwner)
@@ -131,10 +139,10 @@ __fastcall TRADIOSetDlg::TRADIOSetDlg(TComponent* AOwner)
 	if( MsgEng ){
 		CancelBtn->Caption = "Cancel";
 	}
-    else {
+	else {
 		Caption = "リグコントロール(Radio command)";
 		GB1->Caption = "ポートの設定";
-    }
+	}
 	int i;
 	for( i = 0; __MK[i] != NULL; i++ ){
 		Maker->Items->Add(__MK[i]);
@@ -365,7 +373,7 @@ void __fastcall TRADIOSetDlg::SaveBtnClick(TObject *Sender)
 int __fastcall TRADIOSetDlg::IsXX(void)
 {
 	if( strstr(AnsiString(Maker->Text).c_str(), "xx") != NULL ) return 1;	//ja7ude 0428
-    if( m_PollType == RADIO_POLLICOM ) return 1;
+	if( m_PollType == RADIO_POLLICOM ) return 1;
 	if( m_PollType == RADIO_POLLICOMN ) return 1;
 	if( m_PollType == RADIO_POLLOMNIVI ) return 1;
 	if( m_PollType == RADIO_POLLOMNIVIN ) return 1;
@@ -375,44 +383,44 @@ int __fastcall TRADIOSetDlg::IsXX(void)
 int __fastcall TRADIOSetDlg::IsCompatible(int PollType, int MakerIndex)
 {
 
-    if (MakerIndex == 5)    {       //MakerIndex 5 is Kenwood
-        if (PollType == 0){
-            return 1;
-        }
-        else if (PollType == RADIO_POLLKENWOOD) {
-            return 1;
-        }
-        else if (PollType == RADIO_POLLKENWOODN) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }
-    else if (MakerIndex == 1)   {  //MakerIndex 1 is Yaesu FT-9000 et al
-        if (PollType == 0){
-            return 1;
-        }
-        else if (PollType == RADIO_POLLFT9000) {
-            return 1;
-        }
-        else if (PollType == RADIO_POLLFT2000) {
-            return 1;
-        }
-        else if (PollType == RADIO_POLLFT950) {
-            return 1;
-        }
-        else if (PollType == RADIO_POLLFT450) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
+	if (MakerIndex == 6)    {       //MakerIndex 6 is Kenwood
+		if (PollType == 0){
+			return 1;
+		}
+		else if (PollType == RADIO_POLLKENWOOD) {
+			return 1;
+		}
+		else if (PollType == RADIO_POLLKENWOODN) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	else if (MakerIndex == 1)   {  //MakerIndex 1 is Yaesu FT-9000 et al
+		if (PollType == 0){
+			return 1;
+		}
+		else if (PollType == RADIO_POLLFT9000) {
+			return 1;
+		}
+		else if (PollType == RADIO_POLLFT2000) {
+			return 1;
+		}
+		else if (PollType == RADIO_POLLFT950) {
+			return 1;
+		}
+		else if (PollType == RADIO_POLLFT450) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
 
-    }
-    else {
-        return 1;
-    }
+	}
+	else {
+		return 1;
+	}
 }
 //---------------------------------------------------------------------------
 int __fastcall TRADIOSetDlg::IsSame(LPCSTR t, LPCSTR v)

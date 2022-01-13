@@ -753,7 +753,8 @@ void CCradio::Timer(int tx, int interval)
                     case RADIO_POLLFT9000:
                     case RADIO_POLLFT2000:
                     case RADIO_POLLFT950:
- 					case RADIO_POLLFT450:
+					case RADIO_POLLFT450:
+					case RADIO_POLLFT991A:
 						m_rxcnt = 0;
 						SendCommand("IF;");
 						break;
@@ -885,11 +886,11 @@ void CCradio::CatchPoll(BYTE c)
 				m_rxcnt = 0;
 			}
 			break;
-        //1.66B AA6YQ
+		//1.66B AA6YQ
 		case RADIO_POLLFT9000:
 		case RADIO_POLLFT2000:
-        case RADIO_POLLFT950:
-        case RADIO_POLLFT450:
+		case RADIO_POLLFT950:
+		case RADIO_POLLFT450:
 			if( m_rxcnt < (int)sizeof(m_rxbuf) ){
 				if( (c != 0x0d) && (c != 0x0f) ){
 					if( (c != ' ') || m_rxcnt ){
@@ -898,6 +899,26 @@ void CCradio::CatchPoll(BYTE c)
 						if( c == ';' ){
 							if( (m_rxbuf[0] == 'I') && (m_rxbuf[1]=='F') ){
 								if( m_rxcnt >= 13 ) FreqYaesu9K2K();
+							}
+							m_rxcnt = 0;
+						}
+					}
+				}
+			}
+			else {
+				m_rxcnt = 0;
+			}
+			break;
+		//R3KEE 12.01.2022
+		case RADIO_POLLFT991A:
+			if( m_rxcnt < (int)sizeof(m_rxbuf) ){
+				if( (c != 0x0d) && (c != 0x0f) ){
+					if( (c != ' ') || m_rxcnt ){
+						m_rxbuf[m_rxcnt] = c;		// Data
+						m_rxcnt++;
+						if( c == ';' ){
+							if( (m_rxbuf[0] == 'I') && (m_rxbuf[1]=='F') ){
+								if( m_rxcnt >= 13 ) FreqYaesuft991a();
 							}
 							m_rxcnt = 0;
 						}
@@ -1051,6 +1072,19 @@ void CCradio::FreqYaesu9K2K(void)
 	ULONG fq = 0;
 
 	m_rxbuf[13] = 0;
+	if( sscanf((LPCSTR)&m_rxbuf[5], "%lu", &fq) == 1 ){
+		if( fq ) UpdateFreq(double(fq)/1e6);
+	}
+}
+
+//R3KEE 12.01.2022
+void CCradio::FreqYaesuft991a(void)
+{
+//01234567890123
+//IF001014076000    +000000C00000;
+	ULONG fq = 0;
+
+	m_rxbuf[14] = 0;
 	if( sscanf((LPCSTR)&m_rxbuf[5], "%lu", &fq) == 1 ){
 		if( fq ) UpdateFreq(double(fq)/1e6);
 	}
